@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Pet</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%; /* Ensure full height */
+            margin: 0; /* Remove default margin */
+            font-family: 'Arial', sans-serif; /* Modern font */
+        }
+
+        .container-wrapper {
+            display: flex;
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Prevent overflow */
+        }
+
+        .form-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: white; /* White background for form area */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px; /* Rounded corners */
+            margin: 20px; /* Margin for spacing */
+        }
+
+        .form-container h1 {
+            margin-bottom: 20px;
+            color: #2c3e50; /* Darker title color */
+        }
+
+        .form-container .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .image-container {
+            flex: 1;
+            background-image: url('{{ url_for('static', filename='images/h8.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 0 10px 10px 0; /* Rounded corners on the right side */
+        }
+
+        .btn-spacing {
+            margin-top: 10px; /* Adjust this value as needed */
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 10px; /* Less margin on smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-wrapper">
+        <div class="form-container">
+            <div class="container">
+                <h1>Add a Pet Dog</h1>
+
+                <form action="{{ url_for('petAccount') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Pet Dog Name:</label>
+                        <input type="text" class="form-control" id="Name" name="Name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Breed" class="form-label">Pet Dog Breed:</label>
+                        <input type="text" class="form-control" id="Breed" name="Breed" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Age" class="form-label">Pet Dog's Birth Year:</label>
+                        <input type="number" class="form-control" id="Age" name="Age" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Medical_history" class="form-label">Medical History:</label>
+                        <textarea class="form-control" id="Medical_history" name="Medical_history" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Add the Pet Dog</button>
+                    <a href="{{ url_for('show_pets') }}" class="btn btn-secondary w-100 btn-spacing">Show My Pet Dogs</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary w-100 btn-spacing">Go to Dashboard</a>
+                </form>
+            </div>
+        </div>
+
+        <div class="image-container"></div>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html> 

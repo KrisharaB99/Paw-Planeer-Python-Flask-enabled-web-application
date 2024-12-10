@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Vaccination Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='images/h1.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .vaccination-list {
+            margin-top: 20px;
+        }
+
+        .vaccination-item {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Add Vaccination Details</h1>
+
+    <div class="container">
+        <form method="POST" action="{{ url_for('medical') }}">
+            <div class="mb-3">
+                <label for="pet_id" class="form-label">Select Pet</label>
+                <select class="form-select" id="pet_id" name="pet_id" required>
+                    {% for pet in pets %}
+                        <option value="{{ pet.Pet_id }}">{{ pet.Name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="vaccination_details" class="form-label">Vaccination Details</label>
+                <textarea class="form-control" id="vaccination_details" name="vaccination_details" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="treatment_history" class="form-label">Treatment History</label>
+                <textarea class="form-control" id="treatment_history" name="treatment_history" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="medication" class="form-label">Medication</label>
+                <textarea class="form-control" id="medication" name="medication" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Vaccination Details</button>
+        </form>
+    </div>
+    <br>
+
+    <div class="container mt-5">
+        <label for="select_pet" class="form-label">Select Pet for Vaccination Preview</label>
+        <select class="form-select" id="select_pet" name="select_pet" onchange="fetchVaccinationDetails()">
+            <option value="">Select a Pet</option>
+            {% for pet in pets %}
+                <option value="{{ pet.Pet_id }}">{{ pet.Name }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="vaccinationDetailsPreview" class="mt-4">
+            <h5>Vaccination Details:</h5>
+            <div id="vaccinationDetailsContainer" class="vaccination-list"></div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+</body>
+<script>
+    async function fetchVaccinationDetails() {
+        const petId = document.getElementById('select_pet').value;
+        const detailsContainer = document.getElementById('vaccinationDetailsContainer');
+        detailsContainer.innerHTML = ''; // Clear previous details
+
+        if (petId) {
+            try {
+                const response = await fetch(`/get_vaccination_details/${petId}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    detailsContainer.innerHTML = `<div class="text-danger">Error: ${data.error}</div>`;
+                    return;
+                }
+
+                if (data.length === 0) {
+                    detailsContainer.innerHTML = `<div>No vaccination details found for the selected pet.</div>`;
+                    return;
+                }
+
+                data.forEach(record => {
+                    const recordElement = document.createElement('div');
+                    recordElement.className = 'vaccination-item';
+                    recordElement.innerHTML = `
+                        <strong>Vaccination Details:</strong> ${record.Vaccination_details}<br>
+                        <strong>Treatment History:</strong> ${record.Treatment_History}<br>
+                        <strong>Medication:</strong> ${record.Medication}
+                    `;
+                    detailsContainer.appendChild(recordElement);
+                });
+            } catch (error) {
+                detailsContainer.innerHTML = `<div class="text-danger">An error occurred while fetching details: ${error}</div>`;
+            }
+        } else {
+            detailsContainer.innerHTML = '<div>Please select a pet to view details.</div>';
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>

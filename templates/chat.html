@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat Room</title>
+    <style>
+        /* Background styling */
+        body {
+            background: url('static/images/n7.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        /* Adding blur effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(2px);
+            z-index: -1; /* Send the blurred background behind everything */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .messages {
+            height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: #e6e6e6;
+        }
+        .message.self {
+            background-color: #d1e7dd;
+            text-align: right;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .input-area input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-area button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .file-preview img,
+        .file-preview video {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .file-preview video {
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Community Chat Room</h2>
+        <div class="messages" id="messages"></div>
+        <form class="input-area" onsubmit="sendMessage(event)">
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+            <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif,.mp4,.avi,.mov,.pdf,.txt">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        const userId = "{{ user_id }}";
+
+        function fetchMessages() {
+            fetch('/get_messages')
+                .then(response => response.json())
+                .then(data => {
+                    const messagesContainer = document.getElementById('messages');
+                    messagesContainer.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.classList.add('message');
+                        if (msg.userId === userId) {
+                            messageDiv.classList.add('self');
+                        }
+
+                        // Add username and message text
+                        const messageContent = document.createElement('p');
+                        messageContent.textContent = `${msg.username}: ${msg.messageText || ''}`;
+                        messageDiv.appendChild(messageContent);
+
+                        // Add file preview if exists
+                        if (msg.filePath) {
+                            const filePreview = document.createElement('div');
+                            filePreview.classList.add('file-preview');
+
+                            const fileType = msg.fileType;
+                            if (fileType.startsWith('image/')) {
+                                // Preview images
+                                const img = document.createElement('img');
+                                img.src = `/${msg.filePath}`;
+                                filePreview.appendChild(img);
+                            } else if (fileType.startsWith('video/')) {
+                                // Preview videos
+                                const video = document.createElement('video');
+                                video.src = `/${msg.filePath}`;
+                                video.controls = true;
+                                filePreview.appendChild(video);
+                            } else {
+                                // Link for other file types
+                                const link = document.createElement('a');
+                                link.href = `/${msg.filePath}`;
+                                link.textContent = 'Download File';
+                                link.target = '_blank';
+                                filePreview.appendChild(link);
+                            }
+                            messageDiv.appendChild(filePreview);
+                        }
+
+                        messagesContainer.appendChild(messageDiv);
+                    });
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                });
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+
+            const messageInput = document.getElementById('messageInput');
+            const fileInput = document.getElementById('fileInput');
+            const messageText = messageInput.value.trim();
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('messageText', messageText);
+            if (file) {
+                formData.append('file', file);
+            }
+
+            fetch('/send_message', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    messageInput.value = '';
+                    fileInput.value = '';
+                    fetchMessages(); // Refresh messages
+                }
+            });
+        }
+
+        // Auto-refresh messages every 2 seconds
+        setInterval(fetchMessages, 2000);
+        fetchMessages();
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">My Appointments</h1>
+        {% if appointments %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Vet</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment['vet'] }}</td>
+                    <td>{{ appointment['date'] }}</td>
+                    <td>{{ appointment['time'] }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if appointment['status'] == 'Confirmed' else 'warning' if appointment['status'] == 'Pending' else 'danger' }}">
+                            {{ appointment['status'] }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No appointments found.</p>
+        {% endif %}
+    </div>
+    
+</body>
+</html>

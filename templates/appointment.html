@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Appointment</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Background styling */
+        body {
+            background: url('static/images/h25.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        /* Adding blur effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(2px);
+            z-index: -1; /* Send the blurred background behind everything */
+        }
+        
+        .message-box {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h1 class="h4">Schedule an Appointment</h1>
+                    </div>
+                    <div class="card-body">
+                        <!-- Success Message -->
+                        <div id="successMessage" class="message-box alert alert-success" role="alert">
+                            Appointment scheduled successfully!
+                        </div>
+                        <form id="appointmentForm">
+                            <div class="mb-3">
+                                <label for="appointmentDate" class="form-label">Select Appointment Date:</label>
+                                <input type="date" id="appointmentDate" name="appointmentDate" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="appointmentTime" class="form-label">Select Appointment Time:</label>
+                                <input type="time" id="appointmentTime" name="appointmentTime" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="vet" class="form-label">Select Veterinarian:</label>
+                                <select id="vet" name="vet" class="form-select" required>
+                                    <option value="Dr. Amal Perera">Dr. Amal Perera</option>
+                                    <option value="Dr. Kariyapperuma">Dr. Kariyapperuma</option>
+                                    <option value="Dr. Herath Fernando">Dr. Herath Fernando</option>
+                                    <option value="Dr. Kelum Soysa">Dr. Kelum Soysa</option>
+                                    <option value="Dr. J.A.S Gamage">Dr. J.A.S Gamage</option>
+                                    <option value="Dr. Mileesha Bandara">Dr. Mileesha Bandara</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ownerName" class="form-label">Owner Name:</label>
+                                <input type="text" id="ownerName" name="ownerName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="petName" class="form-label">Pet Name:</label>
+                                <input type="text" id="petName" name="petName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="petAge" class="form-label">Pet Age:</label>
+                                <input type="number" id="petAge" name="petAge" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mobile" class="form-label">Mobile Number:</label>
+                                <input type="tel" id="mobile" name="mobile" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address:</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary w-100">Schedule Appointment</button>
+                            </div>
+                            <br>
+                            <div>
+                                <a href="/dashboard" class="btn btn-success w-100">Go to Dashboard</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript for Handling Success Message -->
+    <script>
+        document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/schedule', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to schedule appointment');
+                }
+            })
+            .then(data => {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block'; // Show the message box
+                successMessage.textContent = data.message;
+
+                // Optionally reset the form after success
+                this.reset();
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

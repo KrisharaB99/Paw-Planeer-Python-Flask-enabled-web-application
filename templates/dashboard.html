@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Dog Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ecf0f1;
+            overflow-y: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .main-content header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #bdc3c7;
+        }
+
+        .main-content header h1 {
+            font-size: 28px;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            background: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info p {
+            margin: 0;
+        }
+
+        .user-info strong {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .user-info a {
+            color: #3498db;
+            text-decoration: none;
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .user-info a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .content-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .content-section p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .content-section a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .content-section a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #dogs {
+            background-image: url('{{ url_for('static', filename='images/h12.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            color: white; /* Adjust text color for readability */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #appointments, #VaccinationDetails {
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #appointments {
+            background-image: url('{{ url_for('static', filename='images/n4.jpg') }}');
+        }
+
+        #VaccinationDetails {
+            background-image: url('{{ url_for('static', filename='images/n2.jpg') }}');
+        }
+
+       
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Paw Pal</h2>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#dogs">My Pet Dogs</a></li>
+                <li><a href="#appointments">Appointments</a></li>
+                <li><a href="#VaccinationDetails">Vaccination Details</a></li>
+                <li><a href="#chat">Community Chat</a></li>
+                <li><a href="#EmergencyContact">Emergency Contact</a></li>
+                <li><a href="#inbox">Inbox</a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <header>
+                <h1>Welcome to Your Pet Dog Dashboard</h1>
+                <div class="user-info">
+                    <p>Logged in as: <strong>{{ name }}</strong></p>
+                    <a href="{{ url_for('logout') }}" id="logout">Logout</a>
+                </div>
+            </header>
+
+            <section id="overview" class="content-section">
+                <h2>Overview</h2>
+                <p>Welcome to your Pet Care Dashboard! This is your central hub for managing pet health, appointments, and services. </p>
+                <h4>This dashboard provides everything you need to keep your pets healthy and happy!</h4>
+            </section>
+
+            <section id="dogs" class="content-section">
+                <h2>My Dogs</h2>
+                <p>Manage and view information about your dogs here.</p>
+                <a href="{{ url_for('petAccount') }}">Add Your Pet Dog</a>
+            </section>
+
+            <section id="inbox" class="content-section">
+                <h2>Inbox</h2>
+                <p>Manage Notifications and messages in here.</p>
+                <a href="{{ url_for('inbox') }}">Inbox</a>
+            </section>
+
+            <section id="appointments" class="content-section">
+                <h2>Appointments</h2>
+                <p>View and schedule appointments with vets, groomers, etc.</p>
+                <a href="{{ url_for('appointment') }}">Schedule an Appointment</a>
+            </section>
+
+            <section id="chat" class="content-section">
+                <h2>Community Chat</h2>
+                <p>Chat with other Pet owners and vets and share your experience and knowledge.</p>
+                <a href="{{ url_for('chat') }}">Community Chat</a>
+            </section>
+
+            <section id="VaccinationDetails" class="content-section">
+                <h2>Vaccination Details</h2>
+                <p>View your pet dog vaccination details.</p>
+                <a href="{{ url_for('medical') }}">Medical records and vaccination details.</a>
+            </section>
+
+            <section id="EmergencyContact" class="content-section">
+                <h2>Emergency Contact Details</h2>
+                <p>View Emergency Contact details.</p>
+                <a href="{{ url_for('contact') }}">Emergency Contact details.</a>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>
